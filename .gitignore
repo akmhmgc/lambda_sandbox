@@ -10,3 +10,6 @@
 
 # .tfvars files
 *.tfvars
+
+# zip
+*.zip
