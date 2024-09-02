@@ -1,0 +1,27 @@
+version: "3"
+
+tasks:
+  sync_success_invoke:
+    cmds:
+      - |
+        aws lambda invoke \
+          --function-name success_function \
+          --invocation-type RequestResponse /dev/stdout
+  async_success_invoke:
+    cmds:
+      - |
+        aws lambda invoke \
+          --function-name success_function \
+          --invocation-type Event /dev/stdout
+  sync_fail_invoke:
+    cmds:
+      - |
+        aws lambda invoke \
+          --function-name fail_function \
+          --invocation-type RequestResponse /dev/stdout
+  async_fail_invoke:
+    cmds:
+      - |
+        aws lambda invoke \
+          --function-name fail_function \
+          --invocation-type Event /dev/stdout
