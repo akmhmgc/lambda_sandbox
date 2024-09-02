@@ -14,6 +14,10 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "iam_for_lambda"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
+
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  ]
 }
 
 data "archive_file" "success_lambda" {
@@ -48,4 +52,10 @@ resource "aws_lambda_function" "fail_lambda" {
   source_code_hash = data.archive_file.success_lambda.output_base64sha256
 
   runtime = "nodejs18.x"
+}
+
+
+resource "aws_cloudwatch_log_group" "example" {
+  name              = "/aws/lambda/${aws_lambda_function.fail_lambda.function_name}"
+  retention_in_days = 14
 }
