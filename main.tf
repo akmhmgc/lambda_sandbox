@@ -73,10 +73,20 @@ resource "aws_lambda_function" "fail_lambda" {
   source_code_hash = data.archive_file.success_lambda.output_base64sha256
 
   runtime = "nodejs18.x"
+
+  dead_letter_config {
+    target_arn = aws_sns_topic.fail_topic.arn
+  }
 }
 
 
 resource "aws_cloudwatch_log_group" "example" {
   name              = "/aws/lambda/${aws_lambda_function.fail_lambda.function_name}"
   retention_in_days = 14
+}
+
+resource "aws_lambda_function_event_invoke_config" "fail_lambda" {
+  function_name                   = aws_lambda_function.fail_lambda.function_name
+  maximum_retry_attempts          = 2
+  maximum_event_age_in_seconds    = 3600
 }
